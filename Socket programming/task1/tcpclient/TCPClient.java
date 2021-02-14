@@ -17,6 +17,10 @@ public class TCPClient
     
     public static String askServer(String hostname, int port, String ToServer) throws  IOException 
     {
+
+        //Allocate space for the user & server 
+        byte [] fromServerBuffer = new byte[BUFFERSIZE];
+
         //If we are not sending to server then we are just receieving 
         if(ToServer==null)
         {
@@ -24,38 +28,47 @@ public class TCPClient
         }
         else
         {
-            //Initiate a Socket
+            //Initiate a Socket that connects to server
             Socket clientSocket = new Socket(hostname,port);
-
-            //Streams for input and output from the server
-            InputStream input = clientSocket.getInputStream();
-            OutputStream output = clientSocket.getOutputStream();
-
-            byte [] sender = encode(ToServer);
-            output.write(sender);
-
             
+            //Timer to 2 seconds 
+            clientSocket.setSoTimeout(2000);
 
+            //Skicka data till server
+            clientSocket.getOutputStream().write(encode(ToServer),0,encode(ToServer).length);
+
+            // Sätter serverns info in i byte arrayn sedan räknar ut hur många platser det star 
+            int fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
+
+            //Close the socket
+            clientSocket.close();
+
+            return decode(fromServerBuffer, fromServerLength);
         }
-
-
     }
 
     public static String askServer(String hostname, int port) throws  IOException 
     {
-        // Pre - Allocate byte buffers for reading/receive
-        byte[] fromUserBuffer = new byte [BUFFERSIZE];
-        byte[] fromServerBuffer = new byte[BUFFERSIZE];
-
+        //Initiate a Socket that connects to server
         Socket clientSocket = new Socket(hostname,port);
-        int fromServerLength = clientSocket.getOutputStream().write(b);
+       
+        //Timer to 2ms 
+        clientSocket.setSoTimeout(2000);
 
+        // Allocate space to receieve from server. Byte array
+        byte [] fromServerBuffer = new byte[BUFFERSIZE];
+
+        // Get how long the data from the server is and put the data from the server to the byte array
+        int fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
+
+        return decode(fromServerBuffer, fromServerLength);
 
     }
 
     //Convert byte to string
     private static String decode(byte[] bytes,int length) throws UnsupportedEncodingException
     {   
+        //Converts a byte array to string. 
         String string = new String(bytes,0,length,"UTF-8");
         return string;
     }
@@ -63,36 +76,19 @@ public class TCPClient
     //Convert String to byte
     private static byte[] encode(String text) throws UnsupportedEncodingException
     {
+        //Converts a string to a byte array
         text = text + '\n';
         byte [] toBytes = text.getBytes("UTF-8");
         return toBytes;
     }
+
 
     
 
     public static void main(String[] args) throws Exception
     {
 
-        // Pre - Allocate byte buffers for reading/receive
-        byte[] fromUserBuffer = new byte [BUFFERSIZE];
-        byte [] fromServerBuffer = new byte[BUFFERSIZE];
-
-        Scanner user_in = new Scanner(System.in);
-        System.out.print("Hostname: ");
-        String hostnamee = user_in.nextLine();
-        System.out.print("Portnumber: ");
-        int portnumber = user_in.nextInt();
-        
-
-        Socket clientSocket = new Socket(hostnamee,portnumber);
-
-        int fromUserLength = System.in.read(fromUserBuffer); // User input
-        clientSocket.getOutputStream().write(fromUserBuffer,0,fromUserLength);
-
-        int fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
-        System.out.print("FROM SERVER: "); //Use print method since it is a string
-        System.out.write(fromServerBuffer,0,fromServerLength);
-        clientSocket.close();
+       
             
     }
 }
