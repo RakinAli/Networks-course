@@ -81,10 +81,7 @@ public class TCPClient
         byte [] toBytes = text.getBytes("UTF-8");
         return toBytes;
     }
-
-
     
-
     public static void main(String[] args) throws Exception
     {
 
