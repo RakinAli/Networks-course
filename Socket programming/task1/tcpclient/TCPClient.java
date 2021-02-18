@@ -6,9 +6,6 @@
 package tcpclient;
 import java.net.*;
 import java.io.*;
-import java.util.Scanner;
-
-
 
 public class TCPClient
 {
@@ -60,6 +57,8 @@ public class TCPClient
 
         // Get how long the data from the server is and put the data from the server to the byte array
         int fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
+        
+        clientSocket.close();
 
         return decode(fromServerBuffer, fromServerLength);
 
