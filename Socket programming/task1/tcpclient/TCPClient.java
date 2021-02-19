@@ -79,10 +79,10 @@ public class TCPClient
 
         try 
         {
-            while(fromServerLength != -1 && fromServerLength < 1024)
+            while(fromServerLength != -1 && fromServerLength<1024)
             {
                 // Lägger in data från server till stringbuilder
-                fromServer.append(decode(fromServerBuffer, fromServerLength));
+                fromServer.append(new String(fromServerBuffer,0,fromServerLength,"UTF-8"));
                 fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
             }
         }
@@ -94,7 +94,6 @@ public class TCPClient
         //Close the socket
         clientSocket.close();
         return fromServer.toString();
-        
     }
 
     //Convert byte to string
