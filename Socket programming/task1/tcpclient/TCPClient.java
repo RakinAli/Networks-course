@@ -35,12 +35,28 @@ public class TCPClient
             clientSocket.getOutputStream().write(encode(ToServer),0,encode(ToServer).length);
 
             // Sätter serverns info in i byte arrayn sedan räknar ut hur många platser det star 
-            int fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
+            int fromServerLength = 0;
 
+            // Read from the server 
+            StringBuilder fromServer = new StringBuilder();
+            
+            try 
+            {
+                while(fromServerLength != -1)
+                {
+                    // Lägger in data från server till stringbuilder
+                    fromServer.append(decode(fromServerBuffer, fromServerLength));
+                    fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
+                }
+            }
+            catch (Exception SocketTimeoutException) 
+            {
+                
+            }
+        
             //Close the socket
             clientSocket.close();
-
-            return decode(fromServerBuffer, fromServerLength);
+            return fromServer.toString();
         }
     }
 
@@ -55,13 +71,30 @@ public class TCPClient
         // Allocate space to receieve from server. Byte array
         byte [] fromServerBuffer = new byte[BUFFERSIZE];
 
-        // Get how long the data from the server is and put the data from the server to the byte array
-        int fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
-        
+        // Sätter serverns info in i byte arrayn sedan räknar ut hur många platser det star 
+        int fromServerLength = 0;
+
+        // Read from the server 
+        StringBuilder fromServer = new StringBuilder();
+
+        try 
+        {
+            while(fromServerLength != -1 && fromServerLength < 1024)
+            {
+                // Lägger in data från server till stringbuilder
+                fromServer.append(decode(fromServerBuffer, fromServerLength));
+                fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
+            }
+        }
+        catch (Exception SocketTimeoutException) 
+        {
+            
+        }
+
+        //Close the socket
         clientSocket.close();
-
-        return decode(fromServerBuffer, fromServerLength);
-
+        return fromServer.toString();
+        
     }
 
     //Convert byte to string
