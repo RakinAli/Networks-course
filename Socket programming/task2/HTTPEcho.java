@@ -27,11 +27,8 @@ public class HTTPEcho
     public static void main( String[] args) throws IOException 
     {
 
-        // Buffered size
-        private static int BUFFERSIZE = 1024;
-
-
-        
+        //From the client will be stored here
+        byte [] fromClientbuffer = new byte[BUFFERSIZE];
 
         //Gets the portnumber from the terminal
         int port = Integer.parseInt(args[0]);
@@ -52,35 +49,29 @@ public class HTTPEcho
                 //This is what you return to the client
                 StringBuilder serverResponse = new StringBuilder();
                 
-
                 //Used for the while loop
-                int fromServerLength = 0;
+                
+                int fromClientLength = clientSocket.getInputStream().read(fromClientbuffer);
+                                  
+                while(fromClientLength != -1)
+                {
+                    String decoded = decode(fromClientbuffer, fromClientLength);
+                    if(decoded.contains("\n"))
+                    {
+                        serverResponse.append(decode(fromClientbuffer, fromClientLength));
+                        break;
+                    }
+                }
 
-                while(fromServerLength != -1)
-                {
-                    // Lägger in data från server till stringbuilder
-                    fromServer.append(decode(fromServerBuffer, fromServerLength));
-                    fromServerLength = clientSocket.getInputStream().read(fromServerBuffer);
-                }
-                
-                /*
-                while(clientSocket.getInputStream().read() != -1)
-                {
-                    serverResponse.append(clientSocket.getInputStream().toString() + "\r\n");
-                    break;
-                }
-                */
-                
-                OutputStream outFromServer = clientSocket.getOutputStream().;
-                outFromServer.write(encode("HTTP/1.1 200 OK\r\n\r\n" + serverResponse.toS));
-                
+                OutputStream outFromServer = clientSocket.getOutputStream();
+                outFromServer.write(encode("HTTP/1.1 200 OK\r\n\r\n" + serverResponse));
                 clientSocket.close();
 
             }
         } 
         catch (Exception e) 
         {
-            //Exception: Din mamma
+            // Exception: Din mamma
         }
 
        
