@@ -22,7 +22,7 @@ public class HTTPEcho
     }
 
     //Load one megabyte 
-    static int BUFFERSIZE = 1024;
+    static int BUFFERSIZE = 1000000;
 
     public static void main( String[] args) throws IOException 
     {
@@ -44,7 +44,7 @@ public class HTTPEcho
                 Socket clientSocket = serverSocket.accept();
     
                 //Lägger en timer
-                clientSocket.setSoTimeout(2000);
+                clientSocket.setSoTimeout(5000);
 
                 //This is what you return to the client
                 StringBuilder serverResponse = new StringBuilder();
@@ -55,6 +55,7 @@ public class HTTPEcho
                                   
                 while(fromClientLength != -1)
                 {
+                    
                     String decoded = decode(fromClientbuffer, fromClientLength);
                     if(decoded.contains("\n"))
                     {
