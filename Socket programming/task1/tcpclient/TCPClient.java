@@ -32,7 +32,7 @@ public class TCPClient
             clientSocket.setSoTimeout(2000);
 
             //Skicka data till server
-            clientSocket.getOutputStream().write(encode(ToServer),0,encode(ToServer).length);
+            clientSocket.getOutputStream().write(encode(ToServer+ "\r\n"),0,encode(ToServer).length);
 
             // Sätter serverns info in i byte arrayn sedan räknar ut hur många platser det star 
             int fromServerLength = 0;

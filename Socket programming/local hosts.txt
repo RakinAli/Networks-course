@@ -9,14 +9,14 @@ http://localhost:8888/ask?hostname=java.lab.ssvl.kth.se&port=13
 
 
 -> Whois
-http://localhost:8888/ask?hostname=whois.iis.se&port=43&string=rakin
+http://localhost:8888/ask?hostname=whois.iis.se&port=43&string=google.se
 
 -> Whois
-http://localhost:8888/ask?hostname=whois.internic.net&port=43&string=rakin
+http://localhost:8888/ask?hostname=whois.internic.net&port=43&string=google.com
 
 
 -> Echo
-http://localhost:8888/ask?hostname=java.lab.ssvl.kth.se&port=7&string=rakin
+http://localhost:8888/ask?hostname=java.lab.ssvl.kth.se&port=7&string=Mehir
 
 -> Discard
 http://localhost:8888/ask?hostname=java.lab.ssvl.kth.se&port=9&string=rakin

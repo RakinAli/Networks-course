@@ -48,11 +48,11 @@ public class HTTPAsk
         ServerSocket httpSocket = new ServerSocket(httpPort);
 
         //Http headers 
-        String http200 = "HTTP/1.1 200 ok\r\n\r\n";
+        String http200 = "HTTP/1.1 200 OK\r\n\r\n";
         String http400 = "HTTP/1.1 400 Bad Request\r\n";
         String http404 = "HTTP/1.1 404 Not Found\r\n";
-
         
+        // What the client requests for 
         String clientPort = null;
         String clientHostname = null;
         String clientData = null;
@@ -87,8 +87,17 @@ public class HTTPAsk
                 // Understand what the client requested
                 String clientRequestt = clientRequest.toString();
 
+                // Get the request
+                String[] requestCut1 = clientRequestt.split("\\r\\n");
+
                 // Cuts the request into three strings. First contains GET/ASk,Second -> Domain, Third->Port
-                String[] requestCut = clientRequestt.split("[?&= ]");
+                String [] requestCut = requestCut1[0].split("[?&= ]");
+                
+                // Prints out the request cut
+                for(int i = 0; i<requestCut.length;i++)
+                {
+                    System.out.println(requestCut[i]);
+                }
 
                 //Here we get the values form the String array
                 for(int i=0; i < requestCut.length; i++)
@@ -97,25 +106,26 @@ public class HTTPAsk
                     if(requestCut[i].equals("hostname"))
                     {
                         //After "hostname" -> We get the hostname 
-                        clientHostname = requestCut[++i];
+                        clientHostname = requestCut[i+1];
                     }
 
                     //Here we extract the port number
                     if(requestCut[i].equals("port"))
                     {
-                        clientPort = requestCut[++i];
+                        clientPort = requestCut[1+i];
                     }
 
                     //Here we extract 
                     if(requestCut[i].equals("string"))
                     {
-                        clientData = requestCut[++i];
+                        clientData = requestCut[i+1];
                     }
                 }
+
                 // This is what will be reponsed 
                 StringBuilder responseBuilder = new StringBuilder();
 
-                if(clientHostname != null && clientPort != null && clientPort.matches("[0-9]+")&& requestCut[1].equals("/ask"))
+                if(clientHostname != null && clientPort != null && clientPort.matches("[0-9]+") && requestCut[1].equals("/ask") && requestCut[0].equals("GET"))
                 {
                     try 
                     {
@@ -123,8 +133,7 @@ public class HTTPAsk
                         String response = TCPClient.askServer(clientHostname,Integer.parseInt(clientPort),clientData);
 
                         // What returns ->
-                        responseBuilder.append(http200);
-                        responseBuilder.append(response);
+                        responseBuilder.append(http200 + response);                      
                     } 
                     catch (IOException e) 
                     {   
@@ -133,11 +142,12 @@ public class HTTPAsk
                 }
                 else
                 {
+                    //If postname, hostname is empty or if there's no ask
                     responseBuilder.append(http400);
                 }
 
                 OutputStream responseStream = channelSocket.getOutputStream();
-                responseStream.write(encode("HTTP/1.1 200 OK\r\n\r\n" + responseBuilder.toString()));
+                responseStream.write(encode(responseBuilder.toString()));
                 channelSocket.close();
             }
         } 

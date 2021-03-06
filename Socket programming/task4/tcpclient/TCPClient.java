@@ -5,6 +5,7 @@
 */
 package tcpclient;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.io.*;
 
 public class TCPClient
@@ -32,7 +33,10 @@ public class TCPClient
             clientSocket.setSoTimeout(2000);
 
             //Skicka data till server
-            clientSocket.getOutputStream().write(encode(ToServer),0,encode(ToServer).length);
+            byte[] något = (ToServer+"\r\n").getBytes(StandardCharsets.UTF_8);
+
+            //
+            clientSocket.getOutputStream().write(något);
 
             // Sätter serverns info in i byte arrayn sedan räknar ut hur många platser det star 
             int fromServerLength = 0;
@@ -104,7 +108,7 @@ public class TCPClient
         return string;
     }
 
-    //Convert String to byte
+    //Convert String to byte -> NOT USED BECAUSE OF ERRORS 
     private static byte[] encode(String text) throws UnsupportedEncodingException
     {
         //Converts a string to a byte array
