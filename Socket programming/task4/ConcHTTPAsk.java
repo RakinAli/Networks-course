@@ -20,13 +20,14 @@ public class ConcHTTPAsk
             while(true)
             {
                 //Accepts a client and creates a thread with connection
-                (new Thread(new MyRunnable(serverSocket.accept()))).start();
+                Socket connectionSocket = serverSocket.accept();
+                new Thread(new MyRunnable(connectionSocket)).start();
             }     
         }
          
         catch (IOException e) 
         {
-            System.out.println("Crash code");
+            System.out.println("Wrong with ConcHTTPask");
         }
 
 

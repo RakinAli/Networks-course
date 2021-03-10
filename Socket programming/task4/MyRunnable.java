@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import tcpclient.TCPClient;
 
@@ -22,8 +23,8 @@ public class MyRunnable implements Runnable
     String http404 = "HTTP/1.1 404 Not Found\r\n";
 
 
-    //This is  what
-    Socket channelSocket;
+    //This is what gets connected
+    private Socket channelSocket;
 
     //Constructor -> Used in threads 
     public MyRunnable(Socket socket)
@@ -61,14 +62,8 @@ public class MyRunnable implements Runnable
                String[] requestCut1 = clientRequestt.split("\\r\\n");
 
                // Cuts the request into three strings. First contains GET/ASk,Second -> Domain, Third->Port
-               String [] requestCut = requestCut1[0].split("[?&= ]");
-               
-               // Prints out the request cut
-               for(int i = 0; i<requestCut.length;i++)
-               {
-                   System.out.println(requestCut[i]);
-               }
-
+               String [] requestCut = requestCut1[0].split("[?&= ]");  
+            
                //Here we get the values form the String array
                for(int i=0; i < requestCut.length; i++)
                {
@@ -123,7 +118,6 @@ public class MyRunnable implements Runnable
             System.out.println("Crash the code");
         }
     }
-
     
     //Convert byte to string
     private static String decode(byte[] bytes,int length) throws UnsupportedEncodingException
